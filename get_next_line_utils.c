@@ -6,7 +6,7 @@
 /*   By: sbaghdad < sbaghdad@student.1337.ma>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 19:38:03 by sbaghdad          #+#    #+#             */
-/*   Updated: 2024/12/23 10:43:13 by sbaghdad         ###   ########.fr       */
+/*   Updated: 2024/12/23 12:23:42 by sbaghdad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		i;
 
 	if (!s1 || !s2)
-	{
-		s1 = check_it(s1, s2);
-		return (s1);
-	}
+		return (check_it(s1, s2));
 	len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	string = (char *)malloc(len);
 	if (!string)
@@ -97,9 +94,6 @@ char	*ft_strjoin(char *s1, char *s2)
 		string[i] = s2[j];
 		(1) && (i++, j++);
 	}
-	free(s1);
-	s1 = NULL;
 	string[i] = '\0';
 	return (string);
 }
-

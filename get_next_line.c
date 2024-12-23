@@ -6,7 +6,7 @@
 /*   By: sbaghdad < sbaghdad@student.1337.ma>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 19:37:47 by sbaghdad          #+#    #+#             */
-/*   Updated: 2024/12/23 11:05:08 by sbaghdad         ###   ########.fr       */
+/*   Updated: 2024/12/23 12:22:11 by sbaghdad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,11 @@ char	*change_index(char	*rest)
 	(1) && (i = 0, j = 0);
 	while (rest[i] != '\n' && rest[i])
 		i++;
-	str = malloc(ft_strlen(rest + i) + 1);
 	if (rest[i] == '\n')
 		i++;
-	else
-	{
-		str = NULL;
-		return (free(rest), str);
-	}
+	if (rest[i] == '\0')
+		return (free(rest), NULL);
+	str = malloc(ft_strlen(rest + i) + 1);
 	if (!str)
 		return (free(str), free(rest), NULL);
 	while (rest[i])
@@ -75,26 +72,26 @@ char	*get_it(int fd, char *rest)
 {
 	char	*buffer;
 	int		bytes;
-	char	*temp;
+	char	*tmp;
 
 	bytes = 1;
-	while (!ft_strchr(rest, '\n') && bytes != 0)
+	while (!ft_strchr(rest, '\n'))
 	{
 		buffer = malloc((size_t)BUFFER_SIZE + 1);
-		if(!buffer)
-			return (free(rest),free(buffer), NULL);
-		bytes = read(fd, buffer, BUFFER_SIZE);
-		if(bytes == 0 && rest != NULL)
+		if (!buffer)
+			return (free(rest), free(buffer), NULL);
+		bytes = read(fd, buffer, (size_t)BUFFER_SIZE);
+		if (bytes == 0 && rest)
 			return (free(buffer), rest);
-		else if((bytes == 0 && !rest) || bytes == -1)
-			return (free(buffer), free(rest) ,NULL);
+		else if ((bytes == 0 && !rest) || bytes == -1)
+			return (free(buffer), free(rest), NULL);
 		buffer[bytes] = '\0';
-		temp = ft_strjoin(rest, buffer);
-		free(buffer);
-		if (!temp)
-			return (free(rest), NULL);
-		rest = temp;
+		tmp = ft_strjoin(rest, buffer);
+		free (rest);
+		free (buffer);
+		rest = tmp;
 	}
+	tmp = NULL;
 	return (rest);
 }
 
@@ -102,6 +99,7 @@ char	*get_next_line(int fd)
 {
 	static char	*after_new_line;
 	char		*line;
+	char		*tmp;
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
@@ -113,10 +111,11 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	line = cut_it(after_new_line);
-	if(!line)
+	if (!line)
 	{
 		return (free (after_new_line), line);
 	}
-	after_new_line = change_index(after_new_line);
+	tmp = change_index(after_new_line);
+	after_new_line = tmp;
 	return (line);
 }
